@@ -1,0 +1,26 @@
+{
+    "name": "m.rhaimi/caching_proxy",
+    "description": "Caching server that caches responses from other servers.",
+    "keywords": ["cache", "caching proxy"],
+    "homepage": "https://github.com/Mohammadreza-73/Caching-Proxy-Server",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "CachingProxy\\": "src/"
+        },
+        "files":[
+            "src/helpers/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Mohammadreza",
+            "email": "mohammadreza.rahimi1373@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {},
+    "config": {
+        "sort-packages": true
+    }
+}
