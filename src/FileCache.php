@@ -16,7 +16,9 @@ class FileCache
         $fileName = md5($url);
         $filePath = cache_path($fileName);
 
-        if (file_exists($filePath)) {
+        if (file_exists($filePath) &&
+        (time() - filemtime($filePath) < config('cache', 'lifetime')))
+        {
             return file_get_contents($filePath);
         }
 
