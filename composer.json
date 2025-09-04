@@ -7,7 +7,10 @@
     "autoload": {
         "psr-4": {
             "CachingProxy\\": "src/"
-        }
+        },
+        "files":[
+            "src/helpers/functions.php"
+        ]
     },
     "authors": [
         {
@@ -16,5 +19,8 @@
             "role": "Developer"
         }
     ],
-    "require": {}
+    "require": {},
+    "config": {
+        "sort-packages": true
+    }
 }
