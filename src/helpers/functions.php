@@ -8,7 +8,7 @@ if (! function_exists('base_path')) {
 }
 
 if (! function_exists('cache_path')) {
-    function cache_path(string $file): string
+    function cache_path(string $file = ''): string
     {
         return base_path('cache') . DIRECTORY_SEPARATOR . $file;
     }
