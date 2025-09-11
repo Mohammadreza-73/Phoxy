@@ -30,17 +30,10 @@ class FileCache
         return null;
     }
 
-    public function set(string $url): bool
+    public function set(string $url, string $content): bool
     {
         $fileName = $this->getCacheKey($url);
         $cacheFile = cache_path($fileName);
-
-        // Get the content of the URL
-        $content = file_get_contents($url);
-
-        if ($content === false) {
-            return false;
-        }
 
         file_put_contents($cacheFile, $content);
 
