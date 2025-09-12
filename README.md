@@ -2,12 +2,8 @@
 
 A lightweight, flexible PHP proxy server with intelligent caching capabilities for web content. Designed to improve website performance by caching HTML and JSON resources.
 
----
-**NOTE**
-
-This proxy server is designed for development and moderate production use. For high-traffic applications, consider additional scaling strategies and monitoring.
-
----
+> [!IMPORTANT]  
+> This proxy server is designed for development and moderate production use. For high-traffic applications, consider additional scaling strategies and monitoring.
 
 ## Features
 
