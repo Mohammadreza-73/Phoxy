@@ -14,28 +14,38 @@ class FileCache
         return md5($url);
     }
 
-    public function get(string $url): ?string
+    public function get(string $url): ?array
     {
         $fileName = $this->getCacheKey($url);
         $cacheFile = cache_path($fileName);
 
         if (file_exists($cacheFile)) {
+            $data = unserialize(file_get_contents($cacheFile));
+
+            // Check cache time to live
             if (time() - filemtime($cacheFile) < config('cache', 'ttl')) {
-                return file_get_contents($cacheFile);
+                return $data['content'];
             }
 
+            // Remove expired cache file
             unlink($cacheFile);
         }
 
         return null;
     }
 
-    public function set(string $url, string $content): bool
+    public function set(string $url, array $content): bool
     {
         $fileName = $this->getCacheKey($url);
         $cacheFile = cache_path($fileName);
 
-        file_put_contents($cacheFile, $content);
+        $data = [
+            'timestamp' => time(),
+            'content' => $content,
+            'url' => $url
+        ];
+
+        file_put_contents($cacheFile, serialize($data));
 
         return true;
     }
