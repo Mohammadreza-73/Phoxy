@@ -78,7 +78,7 @@ class ProxyServer
             return true;
         }
 
-        if (! in_array($host, config('cache', 'whitelist'))) {
+        if (in_array($host, config('cache', 'blacklist'))) {
             return false;
         }
 
