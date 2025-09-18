@@ -10,7 +10,7 @@ A lightweight, flexible PHP proxy server with intelligent caching capabilities f
 - 🚀 High Performance: Caches responses to reduce server load and improve response times
 - 📦 Content-Type Aware: Intelligently caches HTML and JSON
 - ⚡ Configurable TTL: Different cache durations for different content types
-- 🔒 Security First: Domain whitelisting and request validation
+- 🔒 Security: Domain blacklisting and request validation
 - 📊 Cache Statistics: Built-in monitoring and statistics generation
 - 🛠️ Easy Configuration: Simple setup and customization
 
@@ -56,9 +56,9 @@ return [
     'max_content_length' => 10485760, // Max response size (10MB)
 
     'filter_url_status' => true,  // Enable/Disable domain filter
-    'whitelist' => [  // Whitelisted domains
-        'zoomit.ir',
-        'google.com',
+    'blacklist' => [  // Blacklisted domains
+        'blocked-domain1.com',
+        'blocked-domain2.com',
     ],
 ];
 ```
@@ -103,7 +103,7 @@ fetch('/proxy.php', {
 
 ## Security Considerations
 
-1. Domain Whitelisting: Only allowed domains can be accessed
+1. Domain Blacklisting: Block specific domains
 2. Content Length Limits: Prevents large file attacks
 3. Timeout Protection: Limits request duration
 4. CORS Headers: Proper cross-origin handling
