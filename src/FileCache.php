@@ -42,7 +42,7 @@ class FileCache
         $data = [
             'timestamp' => time(),
             'content' => $content,
-            'url' => $url
+            'url' => $url,
         ];
 
         file_put_contents($cacheFile, serialize($data));

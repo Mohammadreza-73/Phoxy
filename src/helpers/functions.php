@@ -24,7 +24,9 @@ if (! function_exists('config_path')) {
 if (! function_exists('dd')) {
     function dd(...$vars): void
     {
-        echo '<pre>'; var_dump(...$vars); echo '</pre>';
+        echo '<pre>';
+        var_dump(...$vars);
+        echo '</pre>';
         exit;
     }
 }
