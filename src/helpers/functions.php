@@ -32,7 +32,7 @@ if (! function_exists('dd')) {
 }
 
 if (! function_exists('config')) {
-    function config(string $fileName, string $index): mixed
+    function config(string $fileName, ?string $index = null): mixed
     {
         $fileName = $fileName . '.php';
 
@@ -41,6 +41,10 @@ if (! function_exists('config')) {
         }
 
         $config = require config_path($fileName);
+
+        if ($index === null) {
+            return $config;
+        }
 
         return $config[$index] ?? null;
     }
