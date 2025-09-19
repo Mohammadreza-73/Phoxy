@@ -4,6 +4,13 @@
     "keywords": ["cache", "caching proxy"],
     "homepage": "https://github.com/Mohammadreza-73/Caching-Proxy-Server",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammadreza",
+            "email": "mohammadreza.rahimi1373@gmail.com",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "CachingProxy\\": "src/"
@@ -12,23 +19,26 @@
             "src/helpers/functions.php"
         ]
     },
-    "authors": [
-        {
-            "name": "Mohammadreza",
-            "email": "mohammadreza.rahimi1373@gmail.com",
-            "role": "Developer"
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
-    ],
+    },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.87",
+        "pestphp/pest": "^3.8",
         "phpstan/phpstan": "^2.1"
     },
     "scripts": {
         "lint:dry": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
         "lint": "./vendor/bin/php-cs-fixer fix",
-        "phpstan": "./vendor/bin/phpstan analyse --memory-limit=1G"
+        "phpstan": "./vendor/bin/phpstan analyse --memory-limit=1G",
+        "test": "./vendor/bin/pest"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
