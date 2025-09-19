@@ -2,6 +2,8 @@
 
 namespace CachingProxy;
 
+use RuntimeException;
+
 class ProxyServer
 {
     public function __construct(
@@ -9,7 +11,7 @@ class ProxyServer
     ) {
     }
 
-    public function handleRequest()
+    public function handleRequest(): void
     {
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -63,7 +65,13 @@ class ProxyServer
             return urldecode($_GET['url']);
         }
 
-        $input = json_decode(file_get_contents('php://input'), true);
+        $requestBody = file_get_contents('php://input');
+
+        if ($requestBody === false) {
+            throw new RuntimeException("Failed to read `POST` request body");
+        }
+
+        $input = json_decode($requestBody, true);
 
         if ($input['url'] !== null) {
             return $input['url'];
@@ -88,7 +96,10 @@ class ProxyServer
         return true;
     }
 
-    private function makeRequest(string $url)
+    /**
+     * @return array<mixed>
+     */
+    private function makeRequest(string $url): array
     {
         $ch = curl_init();
 
@@ -107,7 +118,14 @@ class ProxyServer
         // Handle POST requests
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
+
+            $requestBody = file_get_contents('php://input');
+
+            if ($requestBody === false) {
+                throw new RuntimeException("Failed to read `POST` request body");
+            }
+
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $requestBody);
         }
 
         // Forward headers (excluding some sensitive headers)
@@ -159,7 +177,10 @@ class ProxyServer
         ];
     }
 
-    private function cacheResponse($url, $response)
+    /**
+     * @param array<mixed> $response
+     */
+    private function cacheResponse(string $url, array $response): void
     {
         if ($response['status_code'] === 200) {
             header('X-Proxy-Cache: MISS');
@@ -168,13 +189,19 @@ class ProxyServer
         }
     }
 
-    private function sendCachedResponse($cachedResponse)
+    /**
+     * @param array<mixed> $cachedResponse
+     */
+    private function sendCachedResponse(array $cachedResponse): void
     {
         header('X-Proxy-Cache: HIT');
         $this->sendResponse($cachedResponse);
     }
 
-    private function sendResponse(array $response)
+    /**
+     * @param array<mixed> $response
+     */
+    private function sendResponse(array $response): void
     {
         http_response_code($response['status_code']);
 
@@ -190,7 +217,7 @@ class ProxyServer
         echo $response['body'];
     }
 
-    private function sendError($message, $statusCode = 500)
+    private function sendError(string $message, int $statusCode = 500): void
     {
         http_response_code($statusCode);
         header('Content-Type: application/json');
