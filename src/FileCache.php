@@ -2,6 +2,8 @@
 
 namespace CachingProxy;
 
+use RuntimeException;
+
 class FileCache
 {
     public function __construct()
@@ -14,13 +16,22 @@ class FileCache
         return md5($url);
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function get(string $url): ?array
     {
         $fileName = $this->getCacheKey($url);
         $cacheFile = cache_path($fileName);
 
-        if (file_exists($cacheFile)) {
-            $data = unserialize(file_get_contents($cacheFile));
+        if (file_exists($cacheFile) && is_readable($cacheFile)) {
+            $cacheFileContent = file_get_contents($cacheFile);
+
+            if ($cacheFileContent === false) {
+                throw new RuntimeException("Failed to read Cache file `{$cacheFile}`");
+            }
+
+            $data = unserialize($cacheFileContent);
 
             // Check cache time to live
             if (time() - filemtime($cacheFile) < config('cache', 'ttl')) {
@@ -34,6 +45,9 @@ class FileCache
         return null;
     }
 
+    /**
+     * @param array<mixed> $content
+     */
     public function set(string $url, array $content): bool
     {
         $fileName = $this->getCacheKey($url);

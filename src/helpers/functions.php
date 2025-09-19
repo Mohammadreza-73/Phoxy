@@ -22,7 +22,7 @@ if (! function_exists('config_path')) {
 }
 
 if (! function_exists('dd')) {
-    function dd(...$vars): void
+    function dd(mixed ...$vars): void
     {
         echo '<pre>';
         var_dump(...$vars);
@@ -32,7 +32,7 @@ if (! function_exists('dd')) {
 }
 
 if (! function_exists('config')) {
-    function config(string $fileName, string $index)
+    function config(string $fileName, string $index): mixed
     {
         $fileName = $fileName . '.php';
 
