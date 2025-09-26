@@ -1,6 +1,6 @@
 <?php
 
-namespace CachingProxy;
+namespace Phoxy;
 
 use RuntimeException;
 
