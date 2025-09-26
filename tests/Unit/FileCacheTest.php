@@ -39,7 +39,7 @@ describe('contructor', function () {
     test('does not throw exception if cache directory already exists', function () {
         $cacheDir = cache_path();
 
-        expect(fn() => new Phoxy\FileCache)->not->toThrow(Exception::class);
+        expect(fn () => new Phoxy\FileCache())->not->toThrow(Exception::class);
         expect(file_exists($cacheDir))->toBeTrue();
     });
 });
