@@ -1,5 +1,7 @@
 <?php
 
+use Phoxy\Response;
+
 /**
  * Clean up cache directory before each test
  */
@@ -96,7 +98,7 @@ describe('get', function () {
 
     test('returns cached content when file exists and is not expired', function () {
         $url = 'https://example.com/api/v1/data';
-        $data = ['data' => 'test', 'status' => 200];
+        $data = ['data' => 'test', 'status' => Response::HTTP_OK];
 
         $this->fileCache->set($url, $data);
         $result = $this->fileCache->get($url);
@@ -146,7 +148,7 @@ describe('set', function () {
         $url = 'https://example.com/api/v1/data';
         $cacheKey = $this->fileCache->getCacheKey($url);
         $cacheFile = cache_path($cacheKey);
-        $data = ['data' => 'test', 'status' => 200];
+        $data = ['data' => 'test', 'status' => Response::HTTP_OK];
 
         $result = $this->fileCache->set($url, $data);
 

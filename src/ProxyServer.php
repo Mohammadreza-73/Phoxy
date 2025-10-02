@@ -19,14 +19,14 @@ class ProxyServer
 
         // Handle preflight requests
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            http_response_code(200);
+            http_response_code(Response::HTTP_OK);
             exit;
         }
 
         $url = $this->getTargetUrl();
 
         if ($url === null) {
-            $this->sendError('Target URL parameter is required', 400);
+            $this->sendError('Target URL parameter is required', Response::HTTP_BAD_REQUEST);
 
             return;
         }
@@ -34,7 +34,7 @@ class ProxyServer
         // Check filter URL
         if (config('cache', 'filter_url_status')) {
             if ($this->checkFilterUrl($url) === false) {
-                $this->sendError('Domain not allowed', 403);
+                $this->sendError('Domain not allowed', Response::HTTP_FORBIDDEN);
 
                 return;
             }
@@ -55,7 +55,7 @@ class ProxyServer
             $this->cacheResponse($url, $response);
             $this->sendResponse($response);
         } else {
-            $this->sendError($response['error'], $response['status_code'] ?? 500);
+            $this->sendError($response['error'], $response['status_code'] ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -151,7 +151,7 @@ class ProxyServer
             return [
                 'success' => false,
                 'error' => $error,
-                'status_code' => 500,
+                'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR,
             ];
         }
 
@@ -164,7 +164,7 @@ class ProxyServer
             return [
                 'success' => false,
                 'error' => 'Response too large',
-                'status_code' => 413,
+                'status_code' => Response::HTTP_REQUEST_ENTITY_TOO_LARGE,
             ];
         }
 
@@ -182,7 +182,7 @@ class ProxyServer
      */
     private function cacheResponse(string $url, array $response): void
     {
-        if ($response['status_code'] === 200) {
+        if ($response['status_code'] === Response::HTTP_OK) {
             header('X-Proxy-Cache: MISS');
 
             $this->cache->set($url, $response);
@@ -217,7 +217,7 @@ class ProxyServer
         echo $response['body'];
     }
 
-    private function sendError(string $message, int $statusCode = 500): void
+    private function sendError(string $message, int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR): void
     {
         http_response_code($statusCode);
         header('Content-Type: application/json');
