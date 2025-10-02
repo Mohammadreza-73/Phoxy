@@ -1,5 +1,7 @@
 <?php
 
+use Phoxy\Response;
+
 /**
  * Clean up cache directory before each test
  */
@@ -10,6 +12,8 @@ beforeEach(function () {
         array_map('unlink', glob($cacheDir . '/*'));
         rmdir($cacheDir);
     }
+
+    $this->fileCache = new Phoxy\FileCache();
 });
 
 afterAll(function () {
@@ -46,22 +50,20 @@ describe('contructor', function () {
 
 describe('getCacheKey', function () {
     test('returns md5 hash of the URL', function () {
-        $fileCache = new Phoxy\FileCache();
         $url = 'https://example.com/api/v1';
         $expectedKey = md5($url);
 
-        $result = $fileCache->getCacheKey($url);
+        $result = $this->fileCache->getCacheKey($url);
 
         expect($result)->toBe($expectedKey);
     });
 
     test('returns different keys for different URLs', function () {
-        $fileCache = new Phoxy\FileCache();
         $url1 = 'https://example.com/api/v1';
         $url2 = 'https://example.com/api/v2';
 
-        $key1 = $fileCache->getCacheKey($url1);
-        $key2 = $fileCache->getCacheKey($url2);
+        $key1 = $this->fileCache->getCacheKey($url1);
+        $key2 = $this->fileCache->getCacheKey($url2);
 
         expect($key1)->not->toBe($key2);
     });
@@ -69,8 +71,7 @@ describe('getCacheKey', function () {
 
 describe('get', function () {
     test('returns null when cache file does not exist', function () {
-        $fileCache = new Phoxy\FileCache();
-        $result = $fileCache->get('https://example.com/not-exist');
+        $result = $this->fileCache->get('https://example.com/not-exist');
 
         expect($result)->toBeNull();
     });
@@ -80,15 +81,14 @@ describe('get', function () {
             $this->markTestSkipped('File permissions test not applicable on Windows');
         }
 
-        $fileCache = new Phoxy\FileCache();
         $url = 'https://example.com/api/v1/unreachable';
-        $cacheKey = $fileCache->getCacheKey($url);
+        $cacheKey = $this->fileCache->getCacheKey($url);
         $cacheFile = cache_path($cacheKey);
 
         file_put_contents($cacheFile, serialize(['data' => 'test-data']));
         chmod($cacheFile, 0000);
 
-        $result = $fileCache->get($url);
+        $result = $this->fileCache->get($url);
 
         expect($result)->toBeNull();
 
@@ -97,24 +97,22 @@ describe('get', function () {
     });
 
     test('returns cached content when file exists and is not expired', function () {
-        $fileCache = new Phoxy\FileCache();
         $url = 'https://example.com/api/v1/data';
-        $data = ['data' => 'test', 'status' => 200];
+        $data = ['data' => 'test', 'status' => Response::HTTP_OK];
 
-        $fileCache->set($url, $data);
-        $result = $fileCache->get($url);
+        $this->fileCache->set($url, $data);
+        $result = $this->fileCache->get($url);
 
         expect($result)->toBe($data);
     });
 
     test('deletes expired cache file and returns null', function () {
-        $fileCache = new Phoxy\FileCache();
         $url = 'https://example.com/api/v1/expired';
-        $cacheKey = $fileCache->getCacheKey($url);
+        $cacheKey = $this->fileCache->getCacheKey($url);
         $cacheFile = cache_path($cacheKey);
 
         // Create cache file with old timestamp (beyond TTL)
-        $oldTimestamp = time() - 4000;
+        $oldTimestamp = time() - (config('cache', 'ttl') + 1000);
         $cacheContent = [
             'timestamp' => $oldTimestamp,
             'content' => '',
@@ -125,22 +123,21 @@ describe('get', function () {
         // Set file modification time
         touch($cacheFile, $oldTimestamp);
 
-        $result = $fileCache->get($url);
+        $result = $this->fileCache->get($url);
 
         expect($result)->toBeNull();
         expect(file_exists($cacheFile))->toBeFalse();
     });
 
     test('handles corrupted cache file gracefully', function () {
-        $fileCache = new Phoxy\FileCache();
         $url = 'https://example.com/api.v1/corrupted';
-        $cacheKey = $fileCache->getCacheKey($url);
+        $cacheKey = $this->fileCache->getCacheKey($url);
         $cacheFile = cache_path($cacheKey);
 
         file_put_contents($cacheFile, 'invalid-serialized-data');
 
         // Write invalid serialized data
-        $result = $fileCache->get($url);
+        $result = $this->fileCache->get($url);
         // unserialize returns false for invalid data, which should be treated as cache miss
         expect($result)->toBeNull();
     });
@@ -148,13 +145,12 @@ describe('get', function () {
 
 describe('set', function () {
     test('creates cache file with correct content', function () {
-        $fileCache = new Phoxy\FileCache();
         $url = 'https://example.com/api/v1/data';
-        $cacheKey = $fileCache->getCacheKey($url);
+        $cacheKey = $this->fileCache->getCacheKey($url);
         $cacheFile = cache_path($cacheKey);
-        $data = ['data' => 'test', 'status' => 200];
+        $data = ['data' => 'test', 'status' => Response::HTTP_OK];
 
-        $result = $fileCache->set($url, $data);
+        $result = $this->fileCache->set($url, $data);
 
         expect($result)->toBeTrue();
         expect(file_exists($cacheFile))->toBeTrue();
@@ -166,22 +162,20 @@ describe('set', function () {
     });
 
     test('overwrites existing cache file', function () {
-        $fileCache = new Phoxy\FileCache();
         $url = 'https://example.com/api/v1/data';
-        $cacheKey = $fileCache->getCacheKey($url);
+        $cacheKey = $this->fileCache->getCacheKey($url);
         $cacheFile = cache_path($cacheKey);
 
-        $fileCache->set($url, ['data' => 'old']);
+        $this->fileCache->set($url, ['data' => 'old']);
 
         $newData = ['data' => 'new'];
-        $fileCache->set($url, $newData);
+        $this->fileCache->set($url, $newData);
 
         $cachedContent = unserialize(file_get_contents($cacheFile));
         expect($cachedContent['content'])->toBe($newData);
     });
 
     test('stores complex array structures correctly', function () {
-        $fileCache = new Phoxy\FileCache();
         $url = 'https://example.com/api/v1/complex';
         $complexData = [
             'nested' => ['key' => 'value'],
@@ -190,8 +184,8 @@ describe('set', function () {
             'null' => null,
         ];
 
-        $fileCache->set($url, $complexData);
-        $result = $fileCache->get($url);
+        $this->fileCache->set($url, $complexData);
+        $result = $this->fileCache->get($url);
 
         expect($result)->toBe($complexData);
     });
