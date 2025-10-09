@@ -10,7 +10,7 @@ class Response
     public const HTTP_REQUEST_ENTITY_TOO_LARGE = 413;
     public const HTTP_INTERNAL_SERVER_ERROR = 500;
 
-    public static array $statusText = [
+    public static array $statusTexts = [
         200 => 'OK',
         400 => 'Bad Request',
         403 => 'Forbidden',
