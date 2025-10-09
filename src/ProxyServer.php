@@ -2,6 +2,7 @@
 
 namespace Phoxy;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 class ProxyServer
@@ -163,7 +164,7 @@ class ProxyServer
         if (strlen($body) > config('cache', 'max_content_length')) {
             return [
                 'success' => false,
-                'error' => 'Response too large',
+                'error' => Response::$statusTexts[Response::HTTP_REQUEST_ENTITY_TOO_LARGE],
                 'status_code' => Response::HTTP_REQUEST_ENTITY_TOO_LARGE,
             ];
         }
@@ -222,10 +223,16 @@ class ProxyServer
         http_response_code($statusCode);
         header('Content-Type: application/json');
 
-        echo json_encode([
+        $data = json_encode([
             'error' => true,
             'message' => $message,
             'status' => $statusCode,
-        ]);
+        ], JSON_PRETTY_PRINT);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new InvalidArgumentException(json_last_error_msg());
+        }
+
+        echo $data;
     }
 }
