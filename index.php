@@ -2,5 +2,5 @@
 
 require __DIR__.'/vendor/autoload.php';
 
-$proxy = new CachingProxy\ProxyServer();
+$proxy = new Phoxy\ProxyServer();
 $proxy->handleRequest();

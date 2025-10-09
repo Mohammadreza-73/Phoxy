@@ -83,6 +83,7 @@ class ProxyServer
 
     private function checkFilterUrl(string $url): bool
     {
+        $url = $this->standardUrl($url);
         $host = parse_url($url, PHP_URL_HOST);
 
         // Allow localhost for development
@@ -95,6 +96,15 @@ class ProxyServer
         }
 
         return true;
+    }
+
+    private function standardUrl(string $url): string
+    {
+        if (preg_match('/^https?:\/\//', $url)) {
+            return $url;
+        }
+
+        return 'https://' . $url;
     }
 
     /**
