@@ -23,7 +23,7 @@ describe('ProxyServer', function () {
         /** @var Phoxy\ProxyServer|Mockery\MockInterface $mock */
         $mock = Mockery::mock(ProxyServer::class)->makePartial();
 
-        expect(fn() => $mock->handleRequest())->not->toThrow(Exception::class);
+        expect(fn () => $mock->handleRequest())->not->toThrow(Exception::class);
     });
 
     test('handles request through proxy server', function () {
