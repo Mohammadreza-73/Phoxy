@@ -33,4 +33,17 @@ describe('ProxyServer', function () {
 
         $mock->handleRequest();
     });
+
+    /**
+     * Performance Test
+     */
+    test('handles request within reasonable time', function () {
+        $start = microtime(true);
+        $this->proxy->handleRequest();
+        $end = microtime(true);
+
+        $executionTime = $end - $start;
+
+        expect($executionTime)->toBeLessThan(2.0); // 2 Seconds
+    });
 });
