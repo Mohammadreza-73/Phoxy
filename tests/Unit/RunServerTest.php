@@ -23,7 +23,7 @@ describe('ProxyServer', function () {
         /** @var Phoxy\ProxyServer|Mockery\MockInterface $mock */
         $mock = Mockery::mock(ProxyServer::class)->makePartial();
 
-        expect(fn() => $mock->handleRequest())->not->toThrow(Exception::class);
+        expect(fn () => $mock->handleRequest())->not->toThrow(Exception::class);
     });
 
     test('handles request through proxy server', function () {
@@ -32,5 +32,18 @@ describe('ProxyServer', function () {
         $mock->shouldReceive('handleRequest')->once()->andReturnNull();
 
         $mock->handleRequest();
+    });
+
+    /**
+     * Performance Test
+     */
+    test('handles request within reasonable time', function () {
+        $start = microtime(true);
+        $this->proxy->handleRequest();
+        $end = microtime(true);
+
+        $executionTime = $end - $start;
+
+        expect($executionTime)->toBeLessThan(2.0); // 2 Seconds
     });
 });
