@@ -1,3 +1,7 @@
+<p align="center">
+    <img width="256" height="256" alt="Phoxy" src="https://github.com/user-attachments/assets/1f7e1854-c831-472a-9a3b-469cdd9293d8" />
+</p>
+
 # PHP Proxy Server with Caching
 
 A lightweight, flexible PHP proxy server with intelligent caching capabilities for web content. Designed to improve website performance by caching HTML and JSON resources.
