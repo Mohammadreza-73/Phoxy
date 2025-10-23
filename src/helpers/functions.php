@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Config\Repository;
+
 if (! function_exists('base_path')) {
     function base_path(string $path = ''): string
     {
@@ -31,8 +33,8 @@ if (! function_exists('dd')) {
     }
 }
 
-if (! function_exists('config')) {
-    function config(string $fileName, ?string $index = null): mixed
+if (! function_exists('config_file')) {
+    function config_file(string $fileName): mixed
     {
         $fileName = $fileName . '.php';
 
@@ -40,13 +42,24 @@ if (! function_exists('config')) {
             throw new Exception("Config file `$fileName` not found.");
         }
 
-        $config = require config_path($fileName);
+        return require config_path($fileName);
+    }
+}
 
-        if ($index === null) {
-            return $config;
+if (! function_exists('config')) {
+    function config(string $fileName, $key = null, $default = null)
+    {
+        $config = new Repository(config_file($fileName));
+
+        if (is_null($key)) {
+            return $config->all();
         }
 
-        return $config[$index] ?? null;
+        if (is_array($key)) {
+            return $config->set($key);
+        }
+
+        return $config->get($key, $default);
     }
 }
 

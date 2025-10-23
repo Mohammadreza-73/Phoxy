@@ -14,10 +14,11 @@ test('config file without index to be an array', function () {
 });
 
 test('config file expected values', function () {
-    expect(config('cache', 'type'))->toBeString();
+    expect(config('cache', 'driver'))->toBeString();
     expect(config('cache', 'ttl'))->toBeInt();
     expect(config('cache', 'timeout'))->toBeInt();
-    expect(config('cache', 'max_content_length'))->toBeInt();
-    expect(config('cache', 'filter_url_status'))->toBeBool();
-    expect(config('cache', 'blacklist'))->toBeArray();
+    expect(config('cache', 'filter_url_enable'))->toBeBool();
+    expect(config('cache', 'filter_url_list'))->toBeArray();
+    expect(config('cache', 'file'))->toBeArray();
+    expect(config('cache', 'file.max_content_length'))->toBeInt();
 });
