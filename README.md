@@ -29,8 +29,8 @@ A lightweight, flexible PHP proxy server with intelligent caching capabilities f
 
 ### 1. Clone the repository
 ``` bash
-git clone https://github.com/Mohammadreza-73/Caching-Proxy-Server.git
-cd Caching-Proxy-Server
+git clone https://github.com/Mohammadreza-73/Phoxy.git
+cd Phoxy
 ```
 
 ### 2. Ensure PHP requirements
@@ -53,19 +53,6 @@ php -S localhost:8000
 ## Configuration
 
 Edit `src/config/cache.php` to customize the proxy behavior:
-``` php
-return [
-    'ttl' => 3600, // Default cache Time to live
-    'timeout' => 30, // Request to cache content timeout
-    'max_content_length' => 10485760, // Max response size (10MB)
-
-    'filter_url_status' => true,  // Enable/Disable domain filter
-    'blacklist' => [  // Blacklisted domains
-        'blocked-domain1.com',
-        'blocked-domain2.com',
-    ],
-];
-```
 
 ## Usage
 
@@ -131,7 +118,8 @@ caching-proxy-server/
 │   ├── config/          # Cache configuration settings
 │   ├── helpers/         # Helper functions
 │   ├── FileCache.php    # Class to handle cache files
-│   └── ProxyServer.php  # Class to manage Proxy Server
+│   ├── ProxyServer.php  # Class to manage Proxy Server
+│   └── Response.php     # Class to handle HTTP resposne
 ├── .editorconfig        # config for editors
 └── index.php            # Serve project
 ```
