@@ -1,7 +1,7 @@
 {
     "name": "m.rhaimi/caching_proxy",
     "description": "Caching server that caches responses from other servers.",
-    "keywords": ["cache", "caching proxy"],
+    "keywords": ["cache", "caching-proxy", "file-cache", "psr-6"],
     "homepage": "https://github.com/Mohammadreza-73/Caching-Proxy-Server",
     "license": "MIT",
     "authors": [

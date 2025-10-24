@@ -5,7 +5,7 @@ return [
      * --------------------------
      * Default Driver
      * --------------------------
-     * 
+     *
      * Handle caches with difference strategies,
      * like: `file`, `database`, `redis`
      */
@@ -15,7 +15,7 @@ return [
      * --------------------------
      * Time to Live
      * --------------------------
-     * 
+     *
      * This parameter is cache time to live in seconds for outdate cache
      * data and cache new data.
      */
@@ -25,7 +25,7 @@ return [
      * --------------------------
      * Request time out
      * --------------------------
-     * 
+     *
      * This parameter indicates request time out in seconds
      * to the origin URL.
      */
@@ -36,7 +36,7 @@ return [
      * Filter URL
      * --------------------------
      * This parameter enable/disable filter origin URL.
-     * 
+     *
      */
     'filter_url_enable' => true,
 
@@ -45,7 +45,7 @@ return [
      * List of filterd URL
      * --------------------------
      * This parameter idicates filterd URL.
-     * 
+     *
      */
     'filter_url_list' => [
         // 'malicious_url.com',
@@ -56,7 +56,7 @@ return [
      * File caching driver
      * --------------------------
      * This driver caches the content of the origin into the file.
-     * 
+     *
      */
     'file' => [
         /**
