@@ -33,7 +33,7 @@ class ProxyServer
         }
 
         // Check filter URL
-        if (config('cache', 'filter_url_status')) {
+        if (config('cache', 'filter_url_enable')) {
             if ($this->checkFilterUrl($url) === false) {
                 $this->sendError('Domain not allowed', Response::HTTP_FORBIDDEN);
 
@@ -91,7 +91,7 @@ class ProxyServer
             return true;
         }
 
-        if (in_array($host, config('cache', 'blacklist'))) {
+        if (in_array($host, config('cache', 'filter_url_list'))) {
             return false;
         }
 
@@ -171,7 +171,7 @@ class ProxyServer
         $body = substr($response, $header_size);
 
         // Check content length
-        if (strlen($body) > config('cache', 'max_content_length')) {
+        if (strlen($body) > config('cache', 'file.max_content_length')) {
             return [
                 'success' => false,
                 'error' => Response::$statusTexts[Response::HTTP_REQUEST_ENTITY_TOO_LARGE],
