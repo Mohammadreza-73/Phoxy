@@ -6,8 +6,11 @@ use RuntimeException;
 
 class FileCache
 {
+    private string $cacheDir;
+
     public function __construct()
     {
+        $this->cacheDir = dirname(__DIR__).'/cache/';
         $this->ensureCacheDir();
     }
 
@@ -66,8 +69,10 @@ class FileCache
 
     private function ensureCacheDir(): void
     {
-        if (! file_exists(__DIR__.'/cache/')) {
-            mkdir('cache', 0755, true);
+        clearstatcache(true, $this->cacheDir);
+
+        if (! mkdir($this->cacheDir, 0755, true) && ! is_dir($this->cacheDir)) {
+            throw new RuntimeException("Cache directory {$this->cacheDir} could not be created");
         }
     }
 }

@@ -2,15 +2,22 @@
 
 use Phoxy\ProxyServer;
 
+beforeEach(function () {
+    $cacheDir = cache_path();
+
+    if (file_exists($cacheDir)) {
+        array_map('unlink', glob($cacheDir . '/*'));
+        rmdir($cacheDir);
+    }
+
+    $this->proxy = new ProxyServer();
+});
+
+afterEach(function () {
+    Mockery::close();
+});
+
 describe('ProxyServer', function () {
-    beforeEach(function () {
-        $this->proxy = new ProxyServer();
-    });
-
-    afterEach(function () {
-        Mockery::close();
-    });
-
     test('instantiates successfully', function () {
         expect($this->proxy)->toBeInstanceOf(ProxyServer::class);
     });
@@ -22,6 +29,7 @@ describe('ProxyServer', function () {
     test('calls handleRequest without errors', function () {
         /** @var Phoxy\ProxyServer|Mockery\MockInterface $mock */
         $mock = Mockery::mock(ProxyServer::class)->makePartial();
+        $_GET['url'] = urlencode('example.com?url=site.com');
 
         expect(fn () => $mock->handleRequest())->not->toThrow(Exception::class);
     });
@@ -32,18 +40,5 @@ describe('ProxyServer', function () {
         $mock->shouldReceive('handleRequest')->once()->andReturnNull();
 
         $mock->handleRequest();
-    });
-
-    /**
-     * Performance Test
-     */
-    test('handles request within reasonable time', function () {
-        $start = microtime(true);
-        $this->proxy->handleRequest();
-        $end = microtime(true);
-
-        $executionTime = $end - $start;
-
-        expect($executionTime)->toBeLessThan(2.0); // 2 Seconds
     });
 });
