@@ -6,7 +6,7 @@ use Phoxy\Response;
  * Clean up cache directory before each test
  */
 beforeEach(function () {
-    $cacheDir = base_path('cache/');
+    $cacheDir = cache_path();
 
     if (file_exists($cacheDir)) {
         array_map('unlink', glob($cacheDir . '/*'));
@@ -17,7 +17,7 @@ beforeEach(function () {
 });
 
 afterAll(function () {
-    $cacheDir = base_path('cache/');
+    $cacheDir = cache_path();
 
     if (file_exists($cacheDir)) {
         array_map('unlink', glob($cacheDir . '/*'));
@@ -43,8 +43,10 @@ describe('contructor', function () {
     test('does not throw exception if cache directory already exists', function () {
         $cacheDir = cache_path();
 
-        expect(fn () => new Phoxy\FileCache())->not->toThrow(Exception::class);
+        expect(is_dir($cacheDir))->toBeTrue();
         expect(file_exists($cacheDir))->toBeTrue();
+
+        expect(fn () => $this->fileCache)->not->toThrow(Exception::class);
     });
 });
 
