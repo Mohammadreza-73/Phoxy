@@ -63,7 +63,7 @@ class ProxyServer
     private function getTargetUrl(): ?string
     {
         if ($_GET['url'] !== null) {
-            return urldecode($_GET['url']);
+            return filter_var(urldecode($_GET['url']), FILTER_VALIDATE_URL);
         }
 
         $requestBody = file_get_contents('php://input');
@@ -75,7 +75,7 @@ class ProxyServer
         $input = json_decode($requestBody, true);
 
         if ($input['url'] !== null) {
-            return $input['url'];
+            return filter_var($input['url'], FILTER_VALIDATE_URL);
         }
 
         return null;
