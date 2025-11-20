@@ -25,6 +25,8 @@
         }
     },
     "require": {
+        "ext-curl": "*",
+        "php": "^8.0",
         "illuminate/config": "^12.35",
         "psr/cache": "^3.0"
     },
