@@ -4,7 +4,7 @@ namespace Phoxy\Concern;
 
 trait Formatable
 {
-    public function FormatBytes(int $bytes, int $precision = 2)
+    public function formatBytes(int $bytes, int $precision = 2)
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
         $bytes = max($bytes, 0);
